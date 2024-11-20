@@ -1,0 +1,110 @@
+[gd_scene load_steps=9 format=3 uid="uid://7r8xms46ob2w"]
+
+[ext_resource type="Texture2D" uid="uid://c6ffmm6irl5o1" path="res://imagens/white.png" id="1_jgo3h"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_r4i7s"]
+[ext_resource type="Script" path="res://scripts/inimigo.gd" id="3_35r4a"]
+[ext_resource type="Script" path="res://scripts/bola.gd" id="3_qkuch"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5txwi"]
+size = Vector2(1957.16, 460.625)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q3r4o"]
+size = Vector2(137, 252)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_80no3"]
+bounce = 0.5
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hgjd1"]
+size = Vector2(94, 85)
+
+[node name="Main" type="Node2D"]
+
+[node name="ParedeTopo" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ParedeTopo"]
+position = Vector2(818, -232)
+shape = SubResource("RectangleShape2D_5txwi")
+
+[node name="ParedeBaixo" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ParedeBaixo"]
+position = Vector2(829, 878.688)
+shape = SubResource("RectangleShape2D_5txwi")
+
+[node name="Player" type="RigidBody2D" parent="." groups=["EnemyOrPlayer"]]
+position = Vector2(0, 90)
+mass = 1000.0
+gravity_scale = 0.0
+lock_rotation = true
+script = ExtResource("1_r4i7s")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+position = Vector2(69.375, 90)
+scale = Vector2(0.592222, 1.11111)
+texture = ExtResource("1_jgo3h")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+position = Vector2(69, 90)
+shape = SubResource("RectangleShape2D_q3r4o")
+
+[node name="Inimigo" type="RigidBody2D" parent="." groups=["EnemyOrPlayer"]]
+position = Vector2(1000, 105)
+mass = 1000.0
+gravity_scale = 0.0
+lock_rotation = true
+script = ExtResource("3_35r4a")
+
+[node name="Sprite2D" type="Sprite2D" parent="Inimigo"]
+position = Vector2(82, 90)
+scale = Vector2(0.608889, 1.11111)
+texture = ExtResource("1_jgo3h")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Inimigo"]
+position = Vector2(82.5, 90)
+shape = SubResource("RectangleShape2D_q3r4o")
+
+[node name="Bola" type="RigidBody2D" parent="."]
+position = Vector2(0, 90)
+physics_material_override = SubResource("PhysicsMaterial_80no3")
+gravity_scale = 0.0
+lock_rotation = true
+contact_monitor = true
+max_contacts_reported = 5
+script = ExtResource("3_qkuch")
+
+[node name="Sprite2D" type="Sprite2D" parent="Bola"]
+position = Vector2(412.5, 90)
+scale = Vector2(0.422222, 0.377778)
+texture = ExtResource("1_jgo3h")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bola"]
+position = Vector2(412, 90)
+shape = SubResource("RectangleShape2D_hgjd1")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="Bola"]
+position = Vector2(412, 92)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BtnSubir" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 209.0
+offset_top = 476.0
+offset_right = 353.0
+offset_bottom = 605.0
+
+[node name="BtnDescer" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 381.0
+offset_top = 476.0
+offset_right = 525.0
+offset_bottom = 605.0
+
+[connection signal="body_entered" from="Bola" to="Bola" method="_on_body_entered"]
+[connection signal="screen_exited" from="Bola/VisibleOnScreenNotifier2D" to="Bola" method="_on_visible_on_screen_notifier_2d_screen_exited"]
+[connection signal="pressed" from="Control/BtnSubir" to="Player" method="_on_btn_subir_pressed"]
+[connection signal="pressed" from="Control/BtnDescer" to="Player" method="_on_btn_descer_pressed"]
